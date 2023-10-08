@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
+import 'package:intl/intl.dart' as intl;
 import 'package:my_money_manager/db/transaction.dart';
 
 class AccountBalance extends StatelessWidget {
@@ -22,11 +22,16 @@ class AccountBalance extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 14.0),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        textDirection: TextDirection.ltr,
         children: [
           Column(
+            textDirection: TextDirection.ltr,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text('Balance'),
+              const Text(
+                'Balance',
+                textDirection: TextDirection.ltr,
+              ),
               FutureBuilder(
                 future: _transactions,
                 builder: (
@@ -40,12 +45,13 @@ class AccountBalance extends StatelessWidget {
                     }
                   }
                   return Text(
-                    NumberFormat.currency(locale: Platform.localeName)
+                    intl.NumberFormat.currency(locale: Platform.localeName)
                         .format(balance),
                     style: Theme.of(context)
                         .textTheme
                         .titleLarge!
                         .copyWith(color: Colors.green),
+                    textDirection: TextDirection.ltr,
                   );
                 },
               ),
@@ -54,6 +60,7 @@ class AccountBalance extends StatelessWidget {
           const Icon(
             Icons.account_balance_wallet_rounded,
             size: 30.0,
+            textDirection: TextDirection.ltr,
           ),
         ],
       ),
