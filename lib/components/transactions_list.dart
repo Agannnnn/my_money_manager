@@ -22,7 +22,7 @@ class TransactionCardsList extends StatelessWidget {
       ) {
         List<Widget> elements;
 
-        if (snapshot.hasData) {
+        if (snapshot.hasData && snapshot.data!.isNotEmpty) {
           elements = List.generate(
             snapshot.data!.length,
             (index) => TransactionCard(

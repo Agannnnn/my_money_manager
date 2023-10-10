@@ -1,16 +1,19 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart' as intl;
+import 'package:locale_emoji/locale_emoji.dart' as le;
 import 'package:my_money_manager/db/transaction.dart';
 
 class AccountBalance extends StatelessWidget {
   const AccountBalance({
     super.key,
     required Future<List<TransactionModel>> transactions,
+    required this.supportedLocales,
+    required this.setLocale,
   }) : _transactions = transactions;
 
   final Future<List<TransactionModel>> _transactions;
+  final List<Locale> supportedLocales;
+  final Function(Locale locale) setLocale;
 
   @override
   Widget build(BuildContext context) {
@@ -24,36 +27,70 @@ class AccountBalance extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         textDirection: TextDirection.ltr,
         children: [
-          Column(
-            textDirection: TextDirection.ltr,
-            crossAxisAlignment: CrossAxisAlignment.start,
+          Row(
             children: [
-              const Text(
-                'Balance',
-                textDirection: TextDirection.ltr,
+              Padding(
+                padding: const EdgeInsets.only(right: 8.0),
+                child: MenuAnchor(
+                  builder: (context, controller, child) => IconButton.filled(
+                    icon: const Icon(Icons.arrow_downward_rounded),
+                    onPressed: () {
+                      if (controller.isOpen) {
+                        controller.close();
+                      } else {
+                        controller.open();
+                      }
+                    },
+                  ),
+                  menuChildren: List.generate(
+                    supportedLocales.length,
+                    (index) {
+                      return MenuItemButton(
+                        child: Text("${le.getFlagEmoji(
+                          countryCode: supportedLocales[index].countryCode!,
+                        )!} ${intl.NumberFormat.currency(locale: supportedLocales[index].toLanguageTag()).currencyName}"),
+                        onPressed: () {
+                          setLocale(supportedLocales[index]);
+                        },
+                      );
+                    },
+                  ),
+                ),
               ),
-              FutureBuilder(
-                future: _transactions,
-                builder: (
-                  context,
-                  AsyncSnapshot<List<TransactionModel>> snapshot,
-                ) {
-                  double balance = 0;
-                  if (snapshot.hasData) {
-                    for (var e in snapshot.data!) {
-                      balance += e.amount;
-                    }
-                  }
-                  return Text(
-                    intl.NumberFormat.currency(locale: Platform.localeName)
-                        .format(balance),
-                    style: Theme.of(context)
-                        .textTheme
-                        .titleLarge!
-                        .copyWith(color: Colors.green),
+              Column(
+                textDirection: TextDirection.ltr,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    'Balance',
                     textDirection: TextDirection.ltr,
-                  );
-                },
+                  ),
+                  FutureBuilder(
+                    future: _transactions,
+                    builder: (
+                      context,
+                      AsyncSnapshot<List<TransactionModel>> snapshot,
+                    ) {
+                      double balance = 0;
+                      if (snapshot.hasData) {
+                        for (var e in snapshot.data!) {
+                          balance += e.amount;
+                        }
+                      }
+                      return Text(
+                        intl.NumberFormat.currency(
+                          locale:
+                              Localizations.localeOf(context).toLanguageTag(),
+                        ).format(balance),
+                        style: Theme.of(context)
+                            .textTheme
+                            .titleLarge!
+                            .copyWith(color: Colors.green),
+                        textDirection: TextDirection.ltr,
+                      );
+                    },
+                  ),
+                ],
               ),
             ],
           ),

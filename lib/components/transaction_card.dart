@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:my_money_manager/db/transaction.dart';
@@ -39,7 +37,9 @@ class TransactionCard extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 5.0),
                 child: Text(
-                  NumberFormat.currency(locale: Platform.localeName).format(
+                  NumberFormat.currency(
+                    locale: Localizations.localeOf(context).toLanguageTag(),
+                  ).format(
                     transaction.amount,
                   ),
                   style: Theme.of(context).textTheme.titleMedium!.copyWith(

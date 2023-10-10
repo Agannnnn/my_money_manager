@@ -28,6 +28,7 @@ void main() {
     }
 
     await tester.pumpWidget(AccountBalance(
+
       transactions: Future.value(transactions),
     ));
     await tester.pumpAndSettle();

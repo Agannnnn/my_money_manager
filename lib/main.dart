@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:my_money_manager/components/account_balance.dart';
 import 'package:my_money_manager/components/new_transaction_button.dart';
 import 'package:my_money_manager/components/transactions_list.dart';
@@ -38,6 +39,14 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   Future<List<TransactionModel>> _transactions = Future.value([]);
   TimeRange _range = TimeRange.weekly;
+  Locale _locale =
+      const Locale.fromSubtags(languageCode: 'en', countryCode: 'US');
+  List<Locale> supportedLocales = const [
+    Locale.fromSubtags(languageCode: 'en', countryCode: 'US'),
+    Locale.fromSubtags(languageCode: 'en', countryCode: 'GB'),
+    Locale.fromSubtags(languageCode: 'ja', countryCode: 'JP'),
+    Locale.fromSubtags(languageCode: 'id', countryCode: 'ID'),
+  ];
 
   @override
   void initState() {
@@ -49,6 +58,12 @@ class _MyAppState extends State<MyApp> {
   Future<void> refreshTransactions() async {
     setState(() {
       _transactions = listTransactions(db: widget.db, range: _range);
+    });
+  }
+
+  void setLocale(Locale locale) {
+    setState(() {
+      _locale = locale;
     });
   }
 
@@ -80,6 +95,13 @@ class _MyAppState extends State<MyApp> {
         ),
         useMaterial3: true,
       ),
+      localizationsDelegates: const [
+        GlobalWidgetsLocalizations.delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: supportedLocales,
+      locale: _locale,
       home: Scaffold(
         floatingActionButton: NewTransactionButton(
           saveNewTransaction: (amount, detail) => saveTransaction(
@@ -129,7 +151,11 @@ class _MyAppState extends State<MyApp> {
               padding:
                   const EdgeInsets.symmetric(vertical: 24.0, horizontal: 18.0),
               children: [
-                AccountBalance(transactions: _transactions),
+                AccountBalance(
+                  transactions: _transactions,
+                  supportedLocales: supportedLocales,
+                  setLocale: setLocale,
+                ),
                 Padding(
                   padding: const EdgeInsets.only(top: 8.0),
                   child: SegmentedButton<TimeRange>(
