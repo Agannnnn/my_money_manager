@@ -11,7 +11,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   final database =
-      await openDatabase(join(await getDatabasesPath(), 'mymoneymanager.db'));
+  await openDatabase(join(await getDatabasesPath(), 'mymoneymanager.db'));
 
   final db = database;
   await db.execute(
@@ -40,7 +40,7 @@ class _MyAppState extends State<MyApp> {
   Future<List<TransactionModel>> _transactions = Future.value([]);
   TimeRange _range = TimeRange.weekly;
   Locale _locale =
-      const Locale.fromSubtags(languageCode: 'en', countryCode: 'US');
+  const Locale.fromSubtags(languageCode: 'en', countryCode: 'US');
   List<Locale> supportedLocales = const [
     Locale.fromSubtags(languageCode: 'en', countryCode: 'US'),
     Locale.fromSubtags(languageCode: 'en', countryCode: 'GB'),
@@ -104,10 +104,11 @@ class _MyAppState extends State<MyApp> {
       locale: _locale,
       home: Scaffold(
         floatingActionButton: NewTransactionButton(
-          saveNewTransaction: (amount, detail) => saveTransaction(
-            db: widget.db,
-            t: TransactionModel.generate(amount: amount, details: detail),
-          ),
+          saveNewTransaction: (amount, detail) =>
+              saveTransaction(
+                db: widget.db,
+                t: TransactionModel.generate(amount: amount, details: detail),
+              ),
           updateTransactions: () => refreshTransactions(),
         ),
         body: RefreshIndicator(
@@ -149,7 +150,7 @@ class _MyAppState extends State<MyApp> {
             child: ListView(
               scrollDirection: Axis.vertical,
               padding:
-                  const EdgeInsets.symmetric(vertical: 24.0, horizontal: 18.0),
+              const EdgeInsets.symmetric(vertical: 24.0, horizontal: 18.0),
               children: [
                 AccountBalance(
                   transactions: _transactions,
@@ -190,7 +191,7 @@ class _MyAppState extends State<MyApp> {
                   transactions: _transactions,
                   onDeleteTransaction: (TransactionModel t) {
                     deleteTransaction(db: widget.db, t: t).then(
-                      (value) => refreshTransactions(),
+                          (value) => refreshTransactions(),
                     );
                   },
                 ),
